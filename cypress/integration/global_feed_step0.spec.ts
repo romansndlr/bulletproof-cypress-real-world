@@ -1,5 +1,3 @@
-import { DateFormats } from '../support/enums'
-
 describe('Global Feed', () => {
   beforeEach(() => {
     cy.server()
@@ -10,53 +8,137 @@ describe('Global Feed', () => {
   it('Should show all articles correctly', () => {
     cy.visit('/')
 
-    cy.wait('@getArticles').then((xhr) => {
-      const { articles } = xhr.responseBody as GetArticles
+    cy.get('div.article-preview').should('have.length', 3)
 
-      cy.findAllByTestId('article-preview')
-        .should('have.length', articles.length)
-        .each(($articlePreview, index) => {
-          const article: Article = articles[index]
+    // Article 1 start
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('div.article-meta > a > img')
+      .should(
+        'have.attr',
+        'src',
+        'https://s3.amazonaws.com/uifaces/faces/twitter/praveen_vijaya/128.jpg'
+      )
 
-          cy.wrap($articlePreview).within(() => {
-            cy.findByRole('img', { name: /Article author avatar/i }).should(
-              'have.attr',
-              'src',
-              article.author.image
-            )
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('div.article-meta > div.info > a.author')
+      .should('have.text', 'user1')
 
-            cy.findByRole('link', { name: article.author.username }).should(
-              'exist'
-            )
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('div.article-meta > div.info > span.date')
+      .should('have.text', 'Mon Jun 22 2020')
 
-            cy.findByText(
-              Cypress.moment(article.createdAt).format(
-                DateFormats.ArticlePreview
-              )
-            ).should('exist')
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('div.article-meta > div.pull-xs-right > button.btn')
+      .should('contain', '0')
 
-            cy.findByRole('button', { name: /Favorite article/i }).should(
-              'contain',
-              article.favoritesCount
-            )
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('a.preview-link > h1')
+      .should('have.text', 'Article 1')
 
-            cy.findByRole('heading', { name: article.title }).should('exist')
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('a.preview-link > p')
+      .should('have.text', 'This is article 1 description')
 
-            cy.findByText(article.description, { selector: 'p' }).should(
-              'exist'
-            )
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('a.preview-link > ul.tag-list > li.tag-default')
+      .eq(0)
+      .should('have.text', 'tag1')
 
-            cy.findByRole('list', { name: /Tags/i }).within(($list) => {
-              if (Cypress._.isEmpty(article.tagList)) {
-                expect($list).to.be.empty
-              } else {
-                cy.findAllByRole('listitem').each(($tag, tagIndex) => {
-                  expect($tag).to.have.text(article.tagList[tagIndex])
-                })
-              }
-            })
-          })
-        })
-    })
+    cy.get('div.article-preview')
+      .eq(0)
+      .find('a.preview-link > ul.tag-list > li.tag-default')
+      .eq(1)
+      .should('have.text', 'tag2')
+    // Article 1 end
+
+    // Article 2 start
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('div.article-meta > a > img')
+      .should(
+        'have.attr',
+        'src',
+        'https://s3.amazonaws.com/uifaces/faces/twitter/praveen_vijaya/128.jpg'
+      )
+
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('div.article-meta > div.info > a.author')
+      .should('have.text', 'user1')
+
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('div.article-meta > div.info > span.date')
+      .should('have.text', 'Sun Jun 28 2020')
+
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('div.article-meta > div.pull-xs-right > button.btn')
+      .should('contain', '1')
+
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('a.preview-link > h1')
+      .should('have.text', 'Article 2')
+
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('a.preview-link > p')
+      .should('have.text', 'This is article 2 description')
+
+    cy.get('div.article-preview')
+      .eq(1)
+      .find('a.preview-link > ul.tag-list > li.tag-default')
+      .eq(0)
+      .should('have.text', 'tag1')
+    // Article 2 end
+
+    // Article 3 start
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('div.article-meta > a > img')
+      .should(
+        'have.attr',
+        'src',
+        'https://s3.amazonaws.com/uifaces/faces/twitter/nilshelmersson/128.jpg'
+      )
+
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('div.article-meta > div.info > a.author')
+      .should('have.text', 'user2')
+
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('div.article-meta > div.info > span.date')
+      .should('have.text', 'Thu Jun 25 2020')
+
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('div.article-meta > div.pull-xs-right > button.btn')
+      .should('contain', '0')
+
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('a.preview-link > h1')
+      .should('have.text', 'Article 3')
+
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('a.preview-link > p')
+      .should('have.text', 'This is article 3 description')
+
+    cy.get('div.article-preview')
+      .eq(2)
+      .find('a.preview-link > ul.tag-list')
+      .should('be.empty')
+    // Article 3 end
   })
 })
